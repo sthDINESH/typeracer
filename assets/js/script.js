@@ -58,12 +58,34 @@ function startTest() {
     }, 10);
 }
 
+// Function to count correctly typed words
+function countCorrectWords(sample, userInput) {
+    const sampleWords = sample.trim().split(/\s+/);
+    const userWords = userInput.trim().split(/\s+/);
+    let correct = 0;
+    for (let i = 0; i < Math.min(sampleWords.length, userWords.length); i++) {
+        if (sampleWords[i] === userWords[i]) {
+            correct++;
+        }
+    }
+    return correct;
+}
+
+// Function to update results area
+function updateResultsArea(level, time, wpm) {
+    document.getElementById('level').textContent = level.charAt(0).toUpperCase() + level.slice(1);
+    document.getElementById('time').textContent = time;
+    document.getElementById('wpm').textContent = wpm;
+}
+
 // Function to stop the typing test
 function stopTest() {
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
     const userInput = document.getElementById('user-input');
     const timeDisplay = document.getElementById('time');
+    const difficultySelect = document.getElementById('difficulty');
+    const sampleText = document.getElementById('sample-text').textContent;
 
     if (timerInterval) {
         clearInterval(timerInterval);
@@ -75,6 +97,13 @@ function stopTest() {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     userInput.disabled = true;
+
+    // Calculate correct words and WPM
+    const correctWords = countCorrectWords(sampleText, userInput.value);
+    const minutes = elapsed / 60;
+    const wpm = minutes > 0 ? Math.round(correctWords / minutes) : 0;
+
+    updateResultsArea(difficultySelect.value, elapsed, wpm);
 }
 
 // Function to initialize button states
