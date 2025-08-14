@@ -1,3 +1,38 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Nunito:wght@400;700&display=swap');
+
+:root {
+    --accent-color: #FF8400;
+    --font-alegreya: 'Alegreya', serif;
+    --font-nunito: 'Nunito', sans-serif;
+}
+
+header {
+    background-color: var(--accent-color);
+}
+.header-custom #instructions-btn, #instructions-btn {
+    background-color: #fff;
+    color: #000;
+    border: none;
+}
+
+.header-custom #instructions-btn:hover, #instructions-btn:hover {
+    background-color: #ffe0b3;
+    color: var(--accent-color);
+}
+.header-custom h1, h1 {
+    font-family: var(--font-alegreya);
+    color: #fff;
+}
+
 body {
-    background-color: blue;
+    font-family: var(--font-nunito);
+}
+
+header {
+    background-color: var(--accent-color);
+}
+
+.header-custom {
+    min-height: 20vh;
 }
