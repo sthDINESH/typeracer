@@ -31,11 +31,75 @@ function handleDifficultyChange(event) {
 	// Optionally, reset user input and results here if needed
 }
 
+let startTime = null;
+let endTime = null;
+let timerInterval = null;
+
+// Function to start the typing test
+function startTest() {
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const userInput = document.getElementById('user-input');
+    const timeDisplay = document.getElementById('time');
+
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    userInput.value = '';
+    userInput.disabled = false;
+    userInput.focus();
+
+    startTime = Date.now();
+    timeDisplay.textContent = '0.00';
+
+    // Update timer every 10ms for better precision
+    timerInterval = setInterval(function () {
+        const elapsed = (Date.now() - startTime) / 1000;
+        timeDisplay.textContent = elapsed.toFixed(2);
+    }, 10);
+}
+
+// Function to stop the typing test
+function stopTest() {
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const userInput = document.getElementById('user-input');
+    const timeDisplay = document.getElementById('time');
+
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    endTime = Date.now();
+    const elapsed = ((endTime - startTime) / 1000).toFixed(2);
+    timeDisplay.textContent = elapsed;
+
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    userInput.disabled = true;
+}
+
+// Function to initialize button states
+function initializeButtons() {
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const userInput = document.getElementById('user-input');
+
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    userInput.disabled = true;
+}
+
 // Event listener for difficulty selection
 document.addEventListener('DOMContentLoaded', function () {
-	const difficultySelect = document.getElementById('difficulty');
-	// Display a random text for the initial value
-	displayRandomSampleText(difficultySelect.value);
+    const difficultySelect = document.getElementById('difficulty');
+    displayRandomSampleText(difficultySelect.value);
+    difficultySelect.addEventListener('change', handleDifficultyChange);
 
-	difficultySelect.addEventListener('change', handleDifficultyChange);
+    // Timer and button logic
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+
+    initializeButtons();
+
+    startBtn.addEventListener('click', startTest);
+    stopBtn.addEventListener('click', stopTest);
 });
