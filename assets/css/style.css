@@ -40,3 +40,14 @@ header {
     font-size: 1.1rem;
     margin-bottom: 5px;
 }
+
+/* JavaScript-driven styles */
+
+/* Highlighting classes for correct and incorrect words */
+.word-correct {
+    color: blue; /* Light green */
+}
+
+.word-incorrect {
+    color: red; /* Light red */
+}

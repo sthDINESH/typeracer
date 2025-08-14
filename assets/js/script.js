@@ -51,6 +51,9 @@ function startTest() {
     startTime = Date.now();
     timeDisplay.textContent = '0.00';
 
+    resetSampleTextHighlight();
+    addUserInputListener();
+
     // Update timer every 10ms for better precision
     timerInterval = setInterval(function () {
         const elapsed = (Date.now() - startTime) / 1000;
@@ -98,6 +101,8 @@ function stopTest() {
     stopBtn.disabled = true;
     userInput.disabled = true;
 
+    removeUserInputListener();
+
     // Calculate correct words and WPM
     const correctWords = countCorrectWords(sampleText, userInput.value);
     const minutes = elapsed / 60;
@@ -115,6 +120,48 @@ function initializeButtons() {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     userInput.disabled = true;
+}
+
+// Function to highlight sample text based on user input
+function highlightSampleText() {
+    const sampleTextDiv = document.getElementById('sample-text');
+    const userInput = document.getElementById('user-input').value;
+    const originalSample = sampleTextDiv.textContent;
+
+    const sampleWords = originalSample.trim().split(/\s+/);
+    const userWords = userInput.trim().split(/\s+/);
+
+    let highlightedHTML = '';
+    for (let i = 0; i < sampleWords.length; i++) {
+        let colorClass = '';
+        if (userWords[i] !== undefined) {
+            if (sampleWords[i] === userWords[i]) {
+                colorClass = 'word-correct';
+            } else {
+                colorClass = 'word-incorrect';
+            }
+        }
+        highlightedHTML += `<span class="${colorClass}">${sampleWords[i]}</span> `;
+    }
+    sampleTextDiv.innerHTML = highlightedHTML.trim();
+}
+
+// Function to reset sample text highlighting to default
+function resetSampleTextHighlight() {
+    const sampleTextDiv = document.getElementById('sample-text');
+    sampleTextDiv.innerHTML = sampleTextDiv.textContent;
+}
+
+// Add event listener for real-time feedback
+function addUserInputListener() {
+    const userInput = document.getElementById('user-input');
+    userInput.addEventListener('input', highlightSampleText);
+}
+
+// Remove event listener when test ends
+function removeUserInputListener() {
+    const userInput = document.getElementById('user-input');
+    userInput.removeEventListener('input', highlightSampleText);
 }
 
 // Event listener for difficulty selection
