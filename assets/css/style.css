@@ -1,38 +1,42 @@
+/* fonts */
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Nunito:wght@400;700&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Nunito:wght@400;700&display=swap');
+body {
+    font-family: Nunito, sans-serif;
+}
 
-:root {
-    --accent-color: #FF8400;
-    --font-alegreya: 'Alegreya', serif;
-    --font-nunito: 'Nunito', sans-serif;
+h1 {
+    font-family: Alegreya, serif;
 }
 
 header {
-    background-color: var(--accent-color);
-}
-.header-custom #instructions-btn, #instructions-btn {
-    background-color: #fff;
-    color: #000;
-    border: none;
+    background-color: #ff8400;
+    color: white;
 }
 
-.header-custom #instructions-btn:hover, #instructions-btn:hover {
-    background-color: #ffe0b3;
-    color: var(--accent-color);
+/* buttons */
+
+.btn-outline-orange {
+    border: 2px solid #ff8400;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    margin: 5px;
 }
-.header-custom h1, h1 {
-    font-family: var(--font-alegreya);
+
+.btn-outline-orange:hover {
+    background-color: #ff8400;
     color: #fff;
 }
 
-body {
-    font-family: var(--font-nunito);
+
+/* results-area */
+
+#results-area {
+    box-shadow: 0 0 10px #ff8400;
+    border-radius: 10px;
+    padding: 20px;
 }
 
-header {
-    background-color: var(--accent-color);
-}
-
-.header-custom {
-    min-height: 20vh;
+#results-area p {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
 }
