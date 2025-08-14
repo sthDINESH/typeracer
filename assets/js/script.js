@@ -172,6 +172,30 @@ function removeUserInputListener() {
     userInput.parentNode.replaceChild(newInput, userInput);
 }
 
+// Function to reset the test for the current difficulty level
+function retryTest() {
+    const difficultySelect = document.getElementById('difficulty');
+    const currentLevel = difficultySelect.value;
+    displayRandomSampleText(currentLevel);
+
+    // Reset results area
+    updateResultsArea(
+        currentLevel,
+        '0.00',
+        0
+    );
+
+    // Reset timer and state
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    startTime = null;
+    endTime = null;
+    testStarted = false;
+
+    initializeTestArea();
+}
+
 // Event listener for difficulty selection
 document.addEventListener('DOMContentLoaded', function () {
     const difficultySelect = document.getElementById('difficulty');
@@ -186,4 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Remove Start and Stop buttons from UI
     document.getElementById('start-btn').style.display = 'none';
     document.getElementById('stop-btn').style.display = 'none';
+
+    // Add event listener for Retry button
+    document.getElementById('retry-btn').addEventListener('click', retryTest);
 });
