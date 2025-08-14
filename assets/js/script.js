@@ -34,17 +34,16 @@ function handleDifficultyChange(event) {
 let startTime = null;
 let endTime = null;
 let timerInterval = null;
+let testStarted = false;
 
 // Function to start the typing test
-function startTest() {
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
+function startTestOnInput() {
+    if (testStarted) return;
+    testStarted = true;
+
     const userInput = document.getElementById('user-input');
     const timeDisplay = document.getElementById('time');
 
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-    userInput.value = '';
     userInput.disabled = false;
     userInput.focus();
 
@@ -52,7 +51,6 @@ function startTest() {
     timeDisplay.textContent = '0.00';
 
     resetSampleTextHighlight();
-    addUserInputListener();
 
     // Update timer every 10ms for better precision
     timerInterval = setInterval(function () {
@@ -82,12 +80,13 @@ function updateResultsArea(level, time, wpm) {
 }
 
 // Function to stop the typing test
-function stopTest() {
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
+function stopTestOnEnter() {
+    if (!testStarted) return;
+
     const userInput = document.getElementById('user-input');
     const timeDisplay = document.getElementById('time');
     const difficultySelect = document.getElementById('difficulty');
+    // Use textContent to get the sample text without HTML tags
     const sampleText = document.getElementById('sample-text').textContent;
 
     if (timerInterval) {
@@ -97,10 +96,7 @@ function stopTest() {
     const elapsed = ((endTime - startTime) / 1000).toFixed(2);
     timeDisplay.textContent = elapsed;
 
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
     userInput.disabled = true;
-
     removeUserInputListener();
 
     // Calculate correct words and WPM
@@ -109,17 +105,18 @@ function stopTest() {
     const wpm = minutes > 0 ? Math.round(correctWords / minutes) : 0;
 
     updateResultsArea(difficultySelect.value, elapsed, wpm);
+
+    testStarted = false;
 }
 
 // Function to initialize button states
-function initializeButtons() {
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
+function initializeTestArea() {
     const userInput = document.getElementById('user-input');
-
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    userInput.disabled = true;
+    userInput.value = '';
+    userInput.disabled = false;
+    testStarted = false;
+    resetSampleTextHighlight();
+    addUserInputListener();
 }
 
 // Function to highlight sample text based on user input
@@ -152,30 +149,41 @@ function resetSampleTextHighlight() {
     sampleTextDiv.innerHTML = sampleTextDiv.textContent;
 }
 
-// Add event listener for real-time feedback
+// Add event listener for real-time feedback and test start/stop
 function addUserInputListener() {
     const userInput = document.getElementById('user-input');
     userInput.addEventListener('input', highlightSampleText);
+    userInput.addEventListener('input', startTestOnInput, { once: true });
+    userInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            stopTestOnEnter();
+        }
+    });
 }
 
 // Remove event listener when test ends
 function removeUserInputListener() {
     const userInput = document.getElementById('user-input');
     userInput.removeEventListener('input', highlightSampleText);
+    // No need to remove startTestOnInput since it's { once: true }
+    // Remove keydown event by cloning node (quickest way)
+    const newInput = userInput.cloneNode(true);
+    userInput.parentNode.replaceChild(newInput, userInput);
 }
 
 // Event listener for difficulty selection
 document.addEventListener('DOMContentLoaded', function () {
     const difficultySelect = document.getElementById('difficulty');
     displayRandomSampleText(difficultySelect.value);
-    difficultySelect.addEventListener('change', handleDifficultyChange);
+    difficultySelect.addEventListener('change', function (event) {
+        handleDifficultyChange(event);
+        initializeTestArea();
+    });
 
-    // Timer and button logic
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
+    initializeTestArea();
 
-    initializeButtons();
-
-    startBtn.addEventListener('click', startTest);
-    stopBtn.addEventListener('click', stopTest);
+    // Remove Start and Stop buttons from UI
+    document.getElementById('start-btn').style.display = 'none';
+    document.getElementById('stop-btn').style.display = 'none';
 });
